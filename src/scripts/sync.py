@@ -19,7 +19,6 @@ def sync(args):
         error(f"{args.target} not a dir!")
         quit(1)
 
-    log(f"custom paths: [{args.PATHS}]")
     log(f"{sourceChecksumDirPath} into {targetChecksumDirPath}")
 
     sourceChecksumPath = join(f"{sourceChecksumDirPath}", "checksum.txt")

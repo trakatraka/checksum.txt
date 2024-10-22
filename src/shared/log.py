@@ -1,5 +1,5 @@
 from math import floor, ceil
-from os import environ, _exit
+from os import environ, _exit, getpid
 from time import time
 from logging import getLogger, basicConfig, DEBUG
 
@@ -7,7 +7,7 @@ logger = None
 
 if environ.get("LOG_FILE") != None:
     logger = getLogger("")
-    basicConfig(filename=environ.get("LOG_FILE"), encoding='utf-8', level=DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
+    basicConfig(filename=environ.get("LOG_FILE"), encoding='utf-8', level=DEBUG, format=f'%(asctime)s [{getpid()}] [%(levelname)s] %(message)s')
 
 PRINT_EVERY = 1
 

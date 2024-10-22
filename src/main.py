@@ -22,6 +22,9 @@ if args.CMD[0] == "sync":
         error(f"--source and --target must be specified")
         quit(1)
     else:
+        if args.PATHS != None:
+            error(f"PATHS cannot be specified with sync command")
+            quit(1)
         sync(args)
 else:
     if args.target != None or args.source != None:
