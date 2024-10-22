@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
-
+from sys import argv
+from os import curdir
+from os.path import abspath
 
 from shared.args import parser
 from scripts.validate import validate
@@ -8,10 +10,12 @@ from scripts.changes import changes
 from scripts.override import override
 from scripts.append import append
 from scripts.sync import sync
-from shared.log import error, quit
+from shared.log import error, quit, log
 
 args = parser.parse_args()
-print(args)
+log(args)
+log(f"PWD={abspath(curdir)}")
+log(f"ARGS={argv[1:]}")
 
 if args.CMD[0] == "sync":
     if args.target == None or args.source == None:

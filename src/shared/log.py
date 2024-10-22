@@ -47,7 +47,9 @@ def quit(code):
     if code != 0:
         log(f"took {took}ms")
         error(f"exiting with code: [{code}]")
+        log(f"")
         _exit(code)
     else:
         log(f"took {took}ms")
+        log(f"")
         _exit(0)
