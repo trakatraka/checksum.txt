@@ -17,7 +17,6 @@ def override(args, noQuiting=False):
     keysToAdd = set(filesNotInChecksum + keysToAdd)
 
     for key in keysToDelete:
-        value = calculateChecksumTXTValueForKey(key, sourceChecksumPath)
         log(f'{key} removing from checksum.txt!')
         del sourceChecksum[key]
     
