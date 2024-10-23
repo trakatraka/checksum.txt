@@ -2,16 +2,13 @@
 
 from os.path import abspath
 
-from shared.diff import checkForFilesNotInChecksum, checkForMissingAndChangedFiles
+from shared.diff import checkChanges
 from shared.log import log, quit
 
 def changes(args):
     sourceChecksumPath = abspath(args.checksum)
 
-    filesNotInChecksum = checkForFilesNotInChecksum(sourceChecksumPath, args.PATHS, args.verbose != 0)
-    keysToDelete, keysToAdd, changedKeys = checkForMissingAndChangedFiles(sourceChecksumPath, args.PATHS, args.verbose != 0)
-
-    keysToAdd = set(filesNotInChecksum + keysToAdd)
+    keysToDelete, keysToAdd, changedKeys = checkChanges(sourceChecksumPath, args)
 
     log(f"[{len(keysToDelete)}] missing  files")
     log(f"[{len(keysToAdd)}] files added")

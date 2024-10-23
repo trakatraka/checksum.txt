@@ -3,6 +3,14 @@ from shared.fs import scanDir, shoudIgnore
 from shared.checksum import readChecksumTXT, calculateChecksumTXTPathForKey, calculateChecksumTXTValueForKey, calculateChecksumTXTKeyForPath
 from shared.log import logProgress, log, error, warn
 
+def checkChanges(checksumPath, args):
+    filesNotInChecksum = checkForFilesNotInChecksum(checksumPath, args.PATHS, args.verbose != 0)
+    keysToDelete, keysToAdd, changedKeys = checkForMissingAndChangedFiles(checksumPath, args.PATHS, args.verbose != 0)
+
+    keysToAdd = set(filesNotInChecksum + keysToAdd)
+
+    return keysToDelete, changedKeys, keysToAdd
+
 def checkForMissingAndChangedFiles(checksumPath, paths=None, verbose=False):
     sourceChecksum = readChecksumTXT(checksumPath)
     keysToAdd = []

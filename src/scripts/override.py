@@ -2,7 +2,7 @@
 
 from os.path import abspath
 
-from shared.diff import checkForFilesNotInChecksum, checkForMissingAndChangedFiles
+from shared.diff import checkChanges
 from shared.checksum import calculateChecksumTXTValueForKey, readChecksumTXT, writeChecksumTXT
 from shared.log import log, quit
 
@@ -11,10 +11,7 @@ def override(args, noQuiting=False):
 
     sourceChecksum = readChecksumTXT(sourceChecksumPath)
 
-    filesNotInChecksum = checkForFilesNotInChecksum(sourceChecksumPath, args.PATHS, args.verbose != 0)
-    keysToDelete, keysToAdd, changedKeys = checkForMissingAndChangedFiles(sourceChecksumPath, args.PATHS, args.verbose != 0)
-
-    keysToAdd = set(filesNotInChecksum + keysToAdd)
+    keysToDelete, keysToAdd, changedKeys = checkChanges(sourceChecksumPath, args)
 
     for key in keysToDelete:
         log(f'{key} removing from checksum.txt!')
