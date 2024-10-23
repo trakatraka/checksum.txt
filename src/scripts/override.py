@@ -18,7 +18,7 @@ def override(args, noQuiting=False):
 
     for key in keysToDelete:
         log(f'{key} removing from checksum.txt!')
-        del sourceChecksum[key]
+        del(sourceChecksum[key])
     
     for key in keysToAdd:
         value = calculateChecksumTXTValueForKey(key, sourceChecksumPath)

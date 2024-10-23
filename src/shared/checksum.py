@@ -2,6 +2,7 @@ from os import readlink, curdir
 from os.path import isdir, islink, relpath, exists, isfile, dirname, abspath, join
 
 from shared.hash import encodeBase64, sha1sum
+from shared.log import log
 
 def calculateChecksumTXTKeyForPath(path, checksumPath):
     return relpath(abspath(path), dirname(abspath(checksumPath)))

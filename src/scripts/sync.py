@@ -1,12 +1,10 @@
-from os.path import abspath, join, relpath, curdir, isdir, islink, dirname
-from os import remove, unlink, rmdir, mkdir, symlink, readlink
+from os.path import abspath, join, relpath, curdir, isdir, dirname
 
 from scripts.override import override
 from shared.log import log, quit, error, logProgress
 from shared.checksum import readChecksumTXT, calculateChecksumTXTPathForKey, writeChecksumTXT
 from shared.args import parser
-
-from shutil import copy2
+from shared.fs import removePath, replacePath
 
 def sync(args):
     sourceChecksumDirPath = abspath(args.source)
@@ -25,10 +23,10 @@ def sync(args):
     targetChecksumPath = join(f"{targetChecksumDirPath}", "checksum.txt")
 
     # regenerate checksum.txt on source and target
-    if args.pre_sync == "checksum" or args.pre_sync == "source_checksum" or args.pre_sync == None:
+    if args.pre_sync == "all" or args.pre_sync == "source" or args.pre_sync == None:
         log(f"recalculating checkums for [{relpath(sourceChecksumPath, curdir)}]")
         override(parser.parse_args(["--checksum", sourceChecksumPath, "--dry-run", str(args.dry_run) if args.dry_run != None else "1", "override"]), True)
-    if args.pre_sync == "checksum" or args.pre_sync == "target_checksum" or args.pre_sync == None:
+    if args.pre_sync == "all" or args.pre_sync == "target" or args.pre_sync == None:
         log(f"recalculating checkums for [{relpath(targetChecksumPath, curdir)}]")
         override(parser.parse_args(["--checksum", targetChecksumPath, "--dry-run", str(args.dry_run) if args.dry_run != None else "1", "override"]), True)
 
@@ -48,9 +46,9 @@ def sync(args):
                 keysToReplace.append(sourceKey)
 
     # calculate mode
-    deleteKeysMode = args.sync_mode == None or args.sync_mode == "delete" or args.sync_mode == "delete_replace" or args.sync_mode == "delete_add" or args.sync_mode == "delete_replace_add"
-    replaceKeysMode = args.sync_mode == None or args.sync_mode == "replace" or args.sync_mode == "delete_replace" or args.sync_mode == "replace_add" or args.sync_mode == "delete_replace_add"
-    addKeysMode = args.sync_mode == None or args.sync_mode == "add" or args.sync_mode == "delete_add" or args.sync_mode == "replace_add" or args.sync_mode == "delete_replace_add"
+    deleteKeysMode = args.sync_mode == None or args.sync_mode == "delete" or args.sync_mode == "all"
+    replaceKeysMode = args.sync_mode == None or args.sync_mode == "replace" or args.sync_mode == "all"
+    addKeysMode = args.sync_mode == None or args.sync_mode == "add" or args.sync_mode == "all"
 
     # if deleteKeysMode and len(keysToDelete) > 0:
     #     log(f"[{len(keysToDelete)}] files to delete on target")
@@ -74,16 +72,11 @@ def sync(args):
             targetFilePath = calculateChecksumTXTPathForKey(key, targetChecksumPath)
             if args.dry_run == 0:
                 del targetChecksum[key]
-                if islink(targetFilePath):
-                    unlink(targetFilePath)
-                elif isdir(targetFilePath):
-                    rmdir(targetFilePath)
-                else:
-                    remove(targetFilePath)
+                removePath(targetFilePath)
                 writeChecksumTXT(targetChecksumPath, targetChecksum)
             runnedChanges+=1
             if args.verbose != 0:
-                logProgress(dirname(targetFilePath), runnedChanges, totalChanges)
+                logProgress(dirname(key), runnedChanges, totalChanges)
     
     # second replace keys
     if replaceKeysMode:
@@ -93,23 +86,11 @@ def sync(args):
             targetFilePath = calculateChecksumTXTPathForKey(key, targetChecksumPath)
             if args.dry_run == 0:
                 targetChecksum[key] = sourceChecksum[key]
-                if islink(targetFilePath):
-                    unlink(targetFilePath)
-                elif isdir(targetFilePath):
-                    rmdir(targetFilePath)
-                else:
-                    remove(targetFilePath)
-                
-                if islink(sourceFilePath):
-                    symlink(readlink(sourceFilePath), targetFilePath)
-                elif isdir(sourceFilePath):
-                    mkdir(targetFilePath)
-                else:
-                    copy2(sourceFilePath, targetFilePath, follow_symlinks=False)
+                replacePath(sourceFilePath, targetFilePath)
                 writeChecksumTXT(targetChecksumPath, targetChecksum)
             runnedChanges+=1
             if args.verbose != 0:
-                logProgress(dirname(targetFilePath), runnedChanges, totalChanges)
+                logProgress(dirname(key), runnedChanges, totalChanges)
 
     # third add keys
     if addKeysMode:
@@ -119,16 +100,11 @@ def sync(args):
             targetFilePath = calculateChecksumTXTPathForKey(key, targetChecksumPath)
             if args.dry_run == 0:
                 targetChecksum[key] = sourceChecksum[key]
-                if islink(sourceFilePath):
-                    symlink(readlink(sourceFilePath), targetFilePath)
-                elif isdir(sourceFilePath):
-                    mkdir(targetFilePath)
-                else:
-                    copy2(sourceFilePath, targetFilePath, follow_symlinks=False)
+                replacePath(sourceFilePath, targetFilePath)
                 writeChecksumTXT(targetChecksumPath, targetChecksum)
             runnedChanges+=1
             if args.verbose != 0:
-                logProgress(dirname(targetFilePath), runnedChanges, totalChanges)
+                logProgress(dirname(key), runnedChanges, totalChanges)
 
     if deleteKeysMode:
         log(f"[{len(keysToDelete)}] files {dryRunStr}deleted on target")

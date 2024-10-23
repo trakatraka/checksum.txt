@@ -1,3 +1,5 @@
+.DS_Store
+main.spec
 source/
 target/
 a
@@ -5,3 +7,6 @@ b
 bla
 checksum.txt
 test/
+build/
+dist/
+venv/

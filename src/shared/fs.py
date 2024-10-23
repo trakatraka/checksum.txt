@@ -1,5 +1,7 @@
-from os import listdir
-from os.path import join, isdir, basename, islink
+from os import listdir, unlink, rmdir, remove, symlink, readlink, mkdir
+from os.path import join, isdir, basename, islink, exists
+
+from shutil import copy2
 
 def scanDir(dir, ret=None):
     if ret == None:
@@ -23,3 +25,20 @@ def getFilesOfList(paths):
 
 def shoudIgnore(path, checksumPath):
     return path == checksumPath or basename(path) == ".DS_Store"
+
+def removePath(path):
+    if islink(path):
+        unlink(path)
+    elif isdir(path):
+        rmdir(path)
+    elif exists(path):
+        remove(path)
+
+def replacePath(sourceFilePath, targetFilePath):
+    removePath(targetFilePath)
+    if islink(sourceFilePath):
+        symlink(readlink(sourceFilePath), targetFilePath)
+    elif isdir(sourceFilePath):
+        mkdir(targetFilePath)
+    else:
+        copy2(sourceFilePath, targetFilePath, follow_symlinks=False)
