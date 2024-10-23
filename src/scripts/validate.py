@@ -4,11 +4,17 @@ from os.path import abspath
 
 from shared.diff import checkForMissingAndChangedFiles
 from shared.log import log, error, quit
+from shared.checksum import readChecksumTXT
 
 def validate(args):
     sourceChecksumPath = abspath(args.checksum)
 
-    keysToDelete, keysToAdd, changedKeys = checkForMissingAndChangedFiles(sourceChecksumPath, args.PATHS, args.verbose != 0)
+    sourceChecksum = readChecksumTXT(sourceChecksumPath)
+
+    keysToDelete, keysToAdd, changedKeys, errorKeys = checkForMissingAndChangedFiles(sourceChecksumPath, sourceChecksum, args.PATHS, args.verbose != 0)
+
+    for errorKey in errorKeys:
+        log(f"error reading [{errorKey}]")
 
     if len(keysToDelete) > 0:
         error(f"[{len(keysToDelete)}] missing  files")
@@ -22,8 +28,10 @@ def validate(args):
         error(f"[{len(changedKeys)}] files changed")
     else:
         log(f"[{len(changedKeys)}] files changed")
+    if len(errorKeys) > 0:
+        error(f"[{len(errorKeys)}] files cannot be read!")
 
-    if len(keysToDelete) + len(changedKeys) + len(keysToAdd) + len(keysToDelete) > 0:
+    if len(keysToDelete) + len(changedKeys) + len(keysToAdd) + len(keysToDelete) + len(errorKeys) > 0:
         error(f"validation NOT ok")
         quit(1)
     else:

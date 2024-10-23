@@ -1,8 +1,9 @@
 from os import readlink, curdir
-from os.path import isdir, islink, relpath, exists, isfile, dirname, abspath, join
+from os.path import isdir, islink, relpath, exists, dirname, abspath, join
 
 from shared.hash import encodeBase64, sha1sum
-from shared.log import log
+from shared.log import debug
+from time import time
 
 def calculateChecksumTXTKeyForPath(path, checksumPath):
     return relpath(abspath(path), dirname(abspath(checksumPath)))
@@ -20,6 +21,8 @@ def calculateChecksumTXTValueForKey(key, checksumPath):
         return sha1sum(path)
 
 def readChecksumTXT(filename, sep="  "):
+    MS_FROM_START = int(round(time() * 1000))
+    debug(f"reading checksum.txt [{filename}]")
     checksumDict = {}
 
     if not exists(filename):
@@ -33,6 +36,8 @@ def readChecksumTXT(filename, sep="  "):
         key = line[len(checksum) + len(sep):]
         checksumDict[key] = checksum
 
+    took = int(round(time() * 1000)) - MS_FROM_START
+    debug(f"reading checksum.txt [{filename}] took [{took}]")
     return checksumDict
 
 def writeChecksumTXT(filename, checksumDict, sep="  "):

@@ -9,7 +9,7 @@ def append(args):
 
     sourceChecksum = readChecksumTXT(sourceChecksumPath)
 
-    keysToAdd = checkForFilesNotInChecksum(sourceChecksumPath, args.PATHS, args.verbose != 0)
+    keysToAdd = checkForFilesNotInChecksum(sourceChecksumPath, sourceChecksum, args.PATHS)
 
     for key in keysToAdd:
         value = calculateChecksumTXTValueForKey(key, sourceChecksumPath)

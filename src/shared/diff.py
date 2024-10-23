@@ -1,63 +1,79 @@
-from os.path import exists, dirname, abspath, relpath, islink
+from os.path import exists, dirname, abspath, islink
 from shared.fs import scanDir, shoudIgnore
-from shared.checksum import readChecksumTXT, calculateChecksumTXTPathForKey, calculateChecksumTXTValueForKey, calculateChecksumTXTKeyForPath
+from shared.checksum import calculateChecksumTXTPathForKey, calculateChecksumTXTValueForKey, calculateChecksumTXTKeyForPath
 from shared.log import logProgress, log, error, warn
+from time import time
 
-def checkChanges(checksumPath, args):
-    filesNotInChecksum = checkForFilesNotInChecksum(checksumPath, args.PATHS, args.verbose != 0)
-    keysToDelete, keysToAdd, changedKeys = checkForMissingAndChangedFiles(checksumPath, args.PATHS, args.verbose != 0)
+def checkChanges(checksumPath, checksum, args):
+    filesNotInChecksum = checkForFilesNotInChecksum(checksumPath, checksum, args.PATHS) if args.do_not_scan == 0 else []
+    
+    keysToDelete, keysToAdd, changedKeys, errorKeys = checkForMissingAndChangedFiles(checksumPath, checksum, args.PATHS)
 
     keysToAdd = set(filesNotInChecksum + keysToAdd)
 
-    return keysToDelete, changedKeys, keysToAdd
+    return keysToDelete, keysToAdd, changedKeys, errorKeys
 
-def checkForMissingAndChangedFiles(checksumPath, paths=None, verbose=False):
-    sourceChecksum = readChecksumTXT(checksumPath)
+def checkForMissingAndChangedFiles(checksumPath, checksum, paths=None):
+    #sourceChecksum = readChecksumTXT(checksumPath)
     keysToAdd = []
     keysToDelete = []
     changedKeys = []
+    errorKeys = []
 
     filesToCheck = []
 
     if paths == None:
-        for key in sorted(sourceChecksum.keys()):
+        for key in sorted(checksum.keys()):
             filesToCheck.append(calculateChecksumTXTPathForKey(key, checksumPath))
     else:
+        MS_FROM_START = int(round(time() * 1000))
         log(f"scanning for files")
         for path in paths:
             scanDir(path, filesToCheck)
+        took = int(round(time() * 1000)) - MS_FROM_START
+        log(f"scanning for files took {took}ms")
 
     runned = 0
     total = len(filesToCheck)
+
+    MS_FROM_START = int(round(time() * 1000))
+
+    log(f"calculating {total} checksums")
 
     for file in sorted(filesToCheck):
         filepath = abspath(file)
         if not shoudIgnore(filepath, checksumPath):
             key = calculateChecksumTXTKeyForPath(filepath, checksumPath)
-            if key not in sourceChecksum.keys():
+            if key not in checksum.keys():
                 warn(f'[{key}] missing from checksum.txt!')
                 keysToAdd.append(key)
             elif not exists(filepath) and not islink(filepath):
                 error(f'[{key}] file not found!')
                 keysToDelete.append(key)
             else:
-                currentChecksum = calculateChecksumTXTValueForKey(key, checksumPath)
-                if currentChecksum != sourceChecksum[key]:
-                    error(f'[{key}] checksum validation failed !')
-                    changedKeys.append((key, currentChecksum))
+                try:
+                    currentChecksum = calculateChecksumTXTValueForKey(key, checksumPath)
+                    if currentChecksum != checksum[key]:
+                        error(f'[{key}] checksum validation failed !')
+                        changedKeys.append((key, currentChecksum))
+                except Exception:
+                    error(f'[{key}] error calculating checksum for {key} !')
+                    errorKeys.append(key)
             runned+=1
-            if verbose:
-                logProgress(dirname(key), runned, total)
+            logProgress(dirname(key), runned, total)
     
-    return (keysToDelete, keysToAdd, changedKeys)
+    took = int(round(time() * 1000)) - MS_FROM_START
+    log(f"calculating {total} checksums took {took}ms")
+    
+    return (keysToDelete, keysToAdd, changedKeys, errorKeys)
 
-def checkForFilesNotInChecksum(checksumPath, paths=None, verbose=False):
+def checkForFilesNotInChecksum(checksumPath, checksum, paths=None):
+    MS_FROM_START = int(round(time() * 1000))
     ret = []
-    sourceChecksum = readChecksumTXT(checksumPath)
 
     filesToCheck = []
 
-    log(f"scanning for files")
+    log(f"scanning for files not in checksum.txt")
 
     if paths == None:
         scanDir(dirname(checksumPath), filesToCheck)
@@ -65,18 +81,20 @@ def checkForFilesNotInChecksum(checksumPath, paths=None, verbose=False):
         for path in paths:
             scanDir(path, filesToCheck)
     
-    runned = 0
-    total = len(filesToCheck)
+    #runned = 0
+    #total = len(filesToCheck)
     
     for file in sorted(filesToCheck):
         path = abspath(file)
         if not shoudIgnore(path, checksumPath):
             key = calculateChecksumTXTKeyForPath(path, checksumPath)
-            if key not in sourceChecksum.keys():
+            if key not in checksum.keys():
                 error(f'[{key}] not in checksum.txt !')
                 ret.append(key)
-        runned+=1
-        if verbose:
-            logProgress(relpath(path, dirname(checksumPath)), runned, total)
+        #runned+=1
+        #if verbose:
+        #    logProgress(relpath(path, dirname(checksumPath)), runned, total)
+    took = int(round(time() * 1000)) - MS_FROM_START
+    log(f"scanning for files not in checksum.txt took {took}ms")
 
     return ret

@@ -10,12 +10,13 @@ from scripts.changes import changes
 from scripts.override import override
 from scripts.append import append
 from scripts.sync import sync
-from shared.log import error, quit, log
+from shared.log import error, quit, log, setVerbose
 
 args = parser.parse_args()
 log(args)
 log(f"PWD={abspath(curdir)}")
 log(f"ARGS={argv[1:]}")
+setVerbose(args.verbose != 0)
 
 if args.CMD[0] == "sync":
     if args.target == None or args.source == None:
