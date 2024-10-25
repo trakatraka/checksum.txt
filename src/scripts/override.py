@@ -4,7 +4,7 @@ from os.path import abspath
 
 from shared.diff import checkChanges
 from shared.checksum import calculateChecksumTXTValueForKey, readChecksumTXT, writeChecksumTXT
-from shared.log import log, quit, error
+from shared.log import log, quit, error, debug
 
 def override(args, noQuiting=False):
     sourceChecksumPath = abspath(args.checksum)
@@ -20,19 +20,19 @@ def override(args, noQuiting=False):
     for key in keysToAdd:
         try:
             value = calculateChecksumTXTValueForKey(key, sourceChecksumPath)
-            log(f'{key} adding to checksum.txt!')
+            debug(f'{key} adding to checksum.txt!')
             sourceChecksum[key] = value
         except Exception:
             error(f"error calculating ")
 
     for (key, checksum) in changedKeys:
-        log(f'{key} updating from checksum.txt!')
+        debug(f'{key} updating from checksum.txt!')
         sourceChecksum[key] = checksum
     
     for errorKey in errorKeys:
-        log(f"error reading [{errorKey}]")
+        debug(f"error reading [{errorKey}]")
 
-    log(f"[{len(keysToDelete)}] missing files")
+    log(f"[{len(keysToDelete)}] files deleted")
     log(f"[{len(keysToAdd)}] files added")
     log(f"[{len(changedKeys)}] files changed")
     if len(errorKeys) > 0:

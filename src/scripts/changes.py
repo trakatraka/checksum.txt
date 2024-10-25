@@ -16,7 +16,7 @@ def changes(args):
     for errorKey in errorKeys:
         log(f"error reading [{errorKey}]")
 
-    log(f"[{len(keysToDelete)}] missing  files")
+    log(f"[{len(keysToDelete)}] files deleted")
     log(f"[{len(keysToAdd)}] files added")
     log(f"[{len(changedKeys)}] files changed")
     if len(errorKeys) > 0:

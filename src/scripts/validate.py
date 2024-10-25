@@ -11,15 +11,15 @@ def validate(args):
 
     sourceChecksum = readChecksumTXT(sourceChecksumPath)
 
-    keysToDelete, keysToAdd, changedKeys, errorKeys = checkForMissingAndChangedFiles(sourceChecksumPath, sourceChecksum, args.PATHS, args.verbose != 0)
+    keysToDelete, keysToAdd, changedKeys, errorKeys = checkForMissingAndChangedFiles(sourceChecksumPath, sourceChecksum, args.PATHS)
 
     for errorKey in errorKeys:
         log(f"error reading [{errorKey}]")
 
     if len(keysToDelete) > 0:
-        error(f"[{len(keysToDelete)}] missing  files")
+        error(f"[{len(keysToDelete)}] files deleted")
     else:
-        log(f"[{len(keysToDelete)}] missing  files")
+        log(f"[{len(keysToDelete)}] files deleted")
     if len(keysToAdd) > 0:
         error(f"[{len(keysToAdd)}] files added")
     else:

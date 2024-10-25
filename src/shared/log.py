@@ -9,7 +9,7 @@ if environ.get("LOG_FILE") != None:
     logger = getLogger("")
     basicConfig(filename=environ.get("LOG_FILE"), encoding='utf-8', level=DEBUG, format=f'%(asctime)s [{getpid()}] [%(levelname)s] %(message)s')
 
-PRINT_EVERY = 25
+PRINT_EVERY = 1000
 
 MS_FROM_START = int(round(time() * 1000))
 
@@ -32,7 +32,7 @@ def logProgress(lastDir: str, runned: int, TOTAL: int):
         timeLeftAprox = ceil(ceil((took / runned) * (TOTAL - runned) / 1000) / 60)
         totalTimeAprox = ceil(ceil((took / runned) * (TOTAL) / 1000) / 60)
         perFileAprox = ceil((took / runned) * 1000) / 1000
-        debug(f"[{p}]% {runned}/{TOTAL} elapsed time [{elapsed}]s time left aprox [{timeLeftAprox}/{totalTimeAprox}]m per file aprox [{perFileAprox}]ms last dir [{lastDir}]")
+        log(f"[{p}]% {runned}/{TOTAL} elapsed time [{elapsed}]s time left aprox [{timeLeftAprox}/{totalTimeAprox}]m per file aprox [{perFileAprox}]ms last dir [{lastDir}]")
 
 def debug(str):
     if getVerbose():
@@ -44,6 +44,12 @@ def log(str):
     print(str)
     if logger != None:
         logger.info(str)
+
+def verboseError(str):
+    if getVerbose():
+        print(f"[ERROR] {str}")
+    if logger != None:
+        logger.error(str)
 
 def error(str):
     print(f"[ERROR] {str}")

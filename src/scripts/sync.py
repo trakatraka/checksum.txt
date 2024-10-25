@@ -1,7 +1,7 @@
 from os.path import abspath, join, relpath, curdir, isdir, dirname
 
 from scripts.override import override
-from shared.log import log, quit, error, logProgress
+from shared.log import log, quit, error, logProgress, debug
 from shared.checksum import readChecksumTXT, calculateChecksumTXTPathForKey, writeChecksumTXT
 from shared.args import parser
 from shared.fs import removePath, replacePath
@@ -68,20 +68,19 @@ def sync(args):
         sortedKeys = sorted(set(keysToDelete))
         sortedKeys.reverse()
         for key in sortedKeys:
-            log(f"{dryRunStr}deleting [{key}] to target")
+            debug(f"{dryRunStr}deleting [{key}] to target")
             targetFilePath = calculateChecksumTXTPathForKey(key, targetChecksumPath)
             if args.dry_run == 0:
                 del targetChecksum[key]
                 removePath(targetFilePath)
                 writeChecksumTXT(targetChecksumPath, targetChecksum)
             runnedChanges+=1
-            if args.verbose != 0:
-                logProgress(dirname(key), runnedChanges, totalChanges)
+            logProgress(dirname(key), runnedChanges, totalChanges)
     
     # second replace keys
     if replaceKeysMode:
         for key in sorted(set(keysToReplace)):
-            log(f"{dryRunStr}replacing [{key}] to target")
+            debug(f"{dryRunStr}replacing [{key}] to target")
             sourceFilePath = calculateChecksumTXTPathForKey(key, sourceChecksumPath)
             targetFilePath = calculateChecksumTXTPathForKey(key, targetChecksumPath)
             if args.dry_run == 0:
@@ -89,13 +88,12 @@ def sync(args):
                 replacePath(sourceFilePath, targetFilePath)
                 writeChecksumTXT(targetChecksumPath, targetChecksum)
             runnedChanges+=1
-            if args.verbose != 0:
-                logProgress(dirname(key), runnedChanges, totalChanges)
+            logProgress(dirname(key), runnedChanges, totalChanges)
 
     # third add keys
     if addKeysMode:
         for key in sorted(set(keysToAdd)):
-            log(f"{dryRunStr}adding [{key}] to target")
+            debug(f"{dryRunStr}adding [{key}] to target")
             sourceFilePath = calculateChecksumTXTPathForKey(key, sourceChecksumPath)
             targetFilePath = calculateChecksumTXTPathForKey(key, targetChecksumPath)
             if args.dry_run == 0:
@@ -103,8 +101,7 @@ def sync(args):
                 replacePath(sourceFilePath, targetFilePath)
                 writeChecksumTXT(targetChecksumPath, targetChecksum)
             runnedChanges+=1
-            if args.verbose != 0:
-                logProgress(dirname(key), runnedChanges, totalChanges)
+            logProgress(dirname(key), runnedChanges, totalChanges)
 
     if deleteKeysMode:
         log(f"[{len(keysToDelete)}] files {dryRunStr}deleted on target")

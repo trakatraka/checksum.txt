@@ -1,7 +1,7 @@
 from os.path import exists, dirname, abspath, islink
 from shared.fs import scanDir, shoudIgnore
 from shared.checksum import calculateChecksumTXTPathForKey, calculateChecksumTXTValueForKey, calculateChecksumTXTKeyForPath
-from shared.log import logProgress, log, error, warn
+from shared.log import logProgress, log, error, verboseError, debug
 from time import time
 
 def checkChanges(checksumPath, checksum, args):
@@ -45,16 +45,16 @@ def checkForMissingAndChangedFiles(checksumPath, checksum, paths=None):
         if not shoudIgnore(filepath, checksumPath):
             key = calculateChecksumTXTKeyForPath(filepath, checksumPath)
             if key not in checksum.keys():
-                warn(f'[{key}] missing from checksum.txt!')
+                verboseError(f'[{key}] not in checksum.txt!')
                 keysToAdd.append(key)
             elif not exists(filepath) and not islink(filepath):
-                error(f'[{key}] file not found!')
+                verboseError(f'[{key}] file not found!')
                 keysToDelete.append(key)
             else:
                 try:
                     currentChecksum = calculateChecksumTXTValueForKey(key, checksumPath)
                     if currentChecksum != checksum[key]:
-                        error(f'[{key}] checksum validation failed !')
+                        verboseError(f'[{key}] checksum validation failed !')
                         changedKeys.append((key, currentChecksum))
                 except Exception:
                     error(f'[{key}] error calculating checksum for {key} !')
@@ -89,12 +89,13 @@ def checkForFilesNotInChecksum(checksumPath, checksum, paths=None):
         if not shoudIgnore(path, checksumPath):
             key = calculateChecksumTXTKeyForPath(path, checksumPath)
             if key not in checksum.keys():
-                error(f'[{key}] not in checksum.txt !')
+                debug(f'[{key}] not in checksum.txt !')
                 ret.append(key)
         #runned+=1
         #if verbose:
         #    logProgress(relpath(path, dirname(checksumPath)), runned, total)
     took = int(round(time() * 1000)) - MS_FROM_START
+    log(f"found [{len(ret)}] files not in checksum.txt")
     log(f"scanning for files not in checksum.txt took {took}ms")
 
     return ret
