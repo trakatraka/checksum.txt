@@ -45,6 +45,12 @@ def log(str):
     if logger != None:
         logger.info(str)
 
+def verboseWarn(str):
+    if getVerbose():
+        print(f"[WARNING] {str}")
+    if logger != None:
+        logger.warning(str)
+
 def verboseError(str):
     if getVerbose():
         print(f"[ERROR] {str}")
@@ -57,7 +63,7 @@ def error(str):
         logger.error(str)
 
 def warn(str):
-    print(f"[warn] {str}")
+    print(f"[WARNING] {str}")
     if logger != None:
         logger.warning(str)
 

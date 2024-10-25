@@ -1,7 +1,7 @@
 from os.path import exists, dirname, abspath, islink
 from shared.fs import scanDir, shoudIgnore
 from shared.checksum import calculateChecksumTXTPathForKey, calculateChecksumTXTValueForKey, calculateChecksumTXTKeyForPath
-from shared.log import logProgress, log, error, verboseError, debug
+from shared.log import logProgress, log, error, verboseWarn, debug
 from time import time
 
 def checkChanges(checksumPath, checksum, args):
@@ -45,16 +45,16 @@ def checkForMissingAndChangedFiles(checksumPath, checksum, paths=None):
         if not shoudIgnore(filepath, checksumPath):
             key = calculateChecksumTXTKeyForPath(filepath, checksumPath)
             if key not in checksum.keys():
-                verboseError(f'[{key}] not in checksum.txt!')
+                verboseWarn(f'[{key}] not in checksum.txt!')
                 keysToAdd.append(key)
             elif not exists(filepath) and not islink(filepath):
-                verboseError(f'[{key}] file not found!')
+                verboseWarn(f'[{key}] file not found!')
                 keysToDelete.append(key)
             else:
                 try:
                     currentChecksum = calculateChecksumTXTValueForKey(key, checksumPath)
                     if currentChecksum != checksum[key]:
-                        verboseError(f'[{key}] checksum validation failed !')
+                        verboseWarn(f'[{key}] checksum validation failed !')
                         changedKeys.append((key, currentChecksum))
                 except Exception:
                     error(f'[{key}] error calculating checksum for {key} !')

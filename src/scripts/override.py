@@ -14,7 +14,7 @@ def override(args, noQuiting=False):
     keysToDelete, keysToAdd, changedKeys, errorKeys = checkChanges(sourceChecksumPath, sourceChecksum, args)
 
     for key in keysToDelete:
-        log(f'{key} removing from checksum.txt!')
+        debug(f'{key} removing from checksum.txt!')
         del(sourceChecksum[key])
     
     for key in keysToAdd:
@@ -33,8 +33,8 @@ def override(args, noQuiting=False):
         debug(f"error reading [{errorKey}]")
 
     log(f"[{len(keysToDelete)}] files deleted")
-    log(f"[{len(keysToAdd)}] files added")
     log(f"[{len(changedKeys)}] files changed")
+    log(f"[{len(keysToAdd)}] files added")
     if len(errorKeys) > 0:
         error(f"[{len(errorKeys)}] files cannot be read!")
 
