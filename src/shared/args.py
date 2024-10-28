@@ -15,6 +15,7 @@ parser = ArgumentParser(
 parser.add_argument('--pre-sync', nargs='?', choices=["all", "source", "target", "none"], default="all", help='the pre sync setting for %(prog)s (default: %(default)s)')
 parser.add_argument('--sync-mode', nargs='?', choices=["all", "delete", "replace", "add"], default="all", help='the sync setting for %(prog)s (default: %(default)s)')
 parser.add_argument('--verbose', nargs='?', type=int, default=0, help='the verbose setting for %(prog)s (default: %(default)s)')
+parser.add_argument('--print-every', nargs='?', type=int, default=1000, help='the print every setting for %(prog)s (default: %(default)s)')
 parser.add_argument('--source', nargs='?', type=str, default=None, help='the source setting for sync %(prog)s (default: %(default)s)')
 parser.add_argument('--target', nargs='?', type=str, default=None, help='the target setting for sync %(prog)s (default: %(default)s)')
 parser.add_argument('--dry-run', nargs='?', type=int, default=0, help='the dry-run setting for %(prog)s (default: %(default)s)')

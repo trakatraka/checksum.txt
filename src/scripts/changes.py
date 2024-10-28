@@ -13,8 +13,17 @@ def changes(args):
 
     keysToDelete, keysToAdd, changedKeys, errorKeys = checkChanges(sourceChecksumPath, sourceChecksum, args)
 
+    for key in keysToDelete:
+        log(f"[{key}] deleted")
+
+    for key in keysToAdd:
+        log(f"[{key}] added")
+
+    for key in changedKeys:
+        log(f"[{key}] changed")
+
     for errorKey in errorKeys:
-        log(f"error reading [{errorKey}]")
+        error(f"error reading [{errorKey}]")
 
     log(f"[{len(keysToDelete)}] files deleted")
     log(f"[{len(keysToAdd)}] files added")

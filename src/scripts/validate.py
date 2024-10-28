@@ -13,8 +13,17 @@ def validate(args):
 
     keysToDelete, keysToAdd, changedKeys, errorKeys = checkForMissingAndChangedFiles(sourceChecksumPath, sourceChecksum, args.PATHS)
 
+    for key in keysToDelete:
+        log(f"[{key}] deleted")
+
+    for key in keysToAdd:
+        log(f"[{key}] added")
+
+    for key in changedKeys:
+        log(f"[{key}] changed")
+
     for errorKey in errorKeys:
-        log(f"error reading [{errorKey}]")
+        error(f"error reading [{errorKey}]")
 
     if len(keysToDelete) > 0:
         error(f"[{len(keysToDelete)}] files deleted")

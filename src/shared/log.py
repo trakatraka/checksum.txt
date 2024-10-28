@@ -18,6 +18,12 @@ def setVerbose(value: bool=False):
     global verboseSetting
     verboseSetting = value
 
+def initWithArgs(args):
+    setVerbose(args.verbose != 0)
+    if args.print_every != None:
+        global PRINT_EVERY
+        PRINT_EVERY = args.print_every if args.print_every > 0 else False
+
 def getVerbose():
     return verboseSetting
 
@@ -25,7 +31,7 @@ def msFromStart():
     return int(round(time() * 1000)) - MS_FROM_START
 
 def logProgress(lastDir: str, runned: int, TOTAL: int):
-    if runned % PRINT_EVERY == 0:
+    if PRINT_EVERY != False and runned % PRINT_EVERY == 0:
         p = floor(((runned / TOTAL) * 100) * 100) / 100
         took = msFromStart()
         elapsed = ceil(took / 1000)
