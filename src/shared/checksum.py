@@ -1,9 +1,18 @@
 from os import readlink, curdir
 from os.path import isdir, islink, relpath, exists, dirname, abspath, join
 
-from shared.hash import encodeBase64, sha1sum
+from shared.hash import encodeBase64, sha1sum, sha256sum
 from shared.log import debug
 from time import time
+
+DEFAULT_HASH_ALGORITHM = "sha256"
+
+ALGORITHM = DEFAULT_HASH_ALGORITHM
+
+def initHashWithArgs(args):
+    if args.hash != None:
+        global ALGORITHM
+        ALGORITHM = args.hash
 
 def calculateChecksumTXTKeyForPath(path, checksumPath):
     return relpath(abspath(path), dirname(abspath(checksumPath)))
@@ -18,7 +27,13 @@ def calculateChecksumTXTValueForKey(key, checksumPath):
     elif isdir(path):
         return encodeBase64(key)
     else:
-        return sha1sum(path)
+        if ALGORITHM == "sha1":
+            return sha1sum(path)
+        elif ALGORITHM == "sha256":
+            return sha256sum(path)
+        else:
+            raise ValueError(f'hash algorithm {ALGORITHM} not supported.')
+
 
 def readChecksumTXT(filename, sep="  "):
     MS_FROM_START = int(round(time() * 1000))

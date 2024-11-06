@@ -18,7 +18,7 @@ def setVerbose(value: bool=False):
     global verboseSetting
     verboseSetting = value
 
-def initWithArgs(args):
+def initLogWithArgs(args):
     setVerbose(args.verbose != 0)
     if args.print_every != None:
         global PRINT_EVERY

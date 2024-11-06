@@ -1,22 +1,24 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3 -B
 
 from sys import argv
 from os import curdir
 from os.path import abspath
 
+from shared.checksum import initHashWithArgs
 from shared.args import parser
 from scripts.validate import validate
 from scripts.changes import changes
 from scripts.override import override
 from scripts.append import append
 from scripts.sync import sync
-from shared.log import error, quit, log, initWithArgs
+from shared.log import error, quit, log, initLogWithArgs
 
 args = parser.parse_args()
 log(args)
 log(f"PWD={abspath(curdir)}")
 log(f"ARGS={argv[1:]}")
-initWithArgs(args)
+initLogWithArgs(args)
+initHashWithArgs(args)
 
 if args.CMD[0] == "sync":
     if args.target == None or args.source == None:

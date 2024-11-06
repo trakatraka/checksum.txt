@@ -1,3 +1,4 @@
+from shared.checksum import DEFAULT_HASH_ALGORITHM
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 #from pathlib import Path
 
@@ -16,6 +17,8 @@ parser.add_argument('CMD', nargs=1, choices=['sync', 'validate', 'append', 'chan
 parser.add_argument('PATHS', nargs='?', type=list_of_paths, default=None, help='a comma separated list of paths %(prog)s (default: %(default)s)')
 
 parser.add_argument('--checksum', nargs='?', type=str, default="./checksum.txt", help='the checksum.txt file path (default: %(default)s)')
+
+parser.add_argument('--hash', nargs='?', choices=["sha1", "sha256"], default=DEFAULT_HASH_ALGORITHM, help='the hash setting for %(prog)s (default: %(default)s)')
 
 parser.add_argument('--pre-sync', nargs='?', choices=["all", "source", "target", "none"], default="all", help='the pre sync setting for %(prog)s (default: %(default)s)')
 parser.add_argument('--sync-mode', nargs='?', choices=["all", "delete", "replace", "add"], default="all", help='the sync setting for %(prog)s (default: %(default)s)')
