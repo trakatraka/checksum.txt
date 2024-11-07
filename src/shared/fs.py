@@ -24,7 +24,7 @@ def getFilesOfList(paths):
     return ret
 
 def shoudIgnore(path, checksumPath):
-    return path == checksumPath
+    return path == checksumPath or basename(path) == ".DS_Store"
 
 def removePath(path):
     if islink(path):
