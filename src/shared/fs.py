@@ -1,7 +1,7 @@
 from os import listdir, unlink, rmdir, remove, symlink, readlink, mkdir
 from os.path import join, isdir, basename, islink, exists
 
-from shutil import copyfile
+from shutil import copyfile, rmtree
 
 def scanDir(dir, ret=None):
     if ret == None:
@@ -30,7 +30,7 @@ def removePath(path):
     if islink(path):
         unlink(path)
     elif isdir(path):
-        rmdir(path)
+        rmtree(path, ignore_errors=True)
     elif exists(path):
         remove(path)
 
