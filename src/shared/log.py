@@ -43,8 +43,8 @@ def logProgress(lastDir: str, runned: int, TOTAL: int):
 def debug(str):
     if getVerbose():
         print(str)
-    if logger != None:
-        logger.debug(str)  
+        if logger != None:
+            logger.debug(str)  
 
 def log(str):
     print(str)
@@ -60,8 +60,8 @@ def verboseWarn(str):
 def verboseError(str):
     if getVerbose():
         print(f"[ERROR] {str}")
-    if logger != None:
-        logger.error(str)
+        if logger != None:
+            logger.error(str)
 
 def error(str):
     print(f"[ERROR] {str}")
