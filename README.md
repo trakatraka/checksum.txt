@@ -114,3 +114,5 @@ the --verbose argument is for adding additional logging output for debugging pur
 the --do-not-scan will disable the search for new files in the current command.
 
 ### --checksum
+
+the --checksum argument is for specifing the actual ```checksum.txt``` file to be used. Its defaults to ```$PWD/checksum.txt```.
