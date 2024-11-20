@@ -116,3 +116,11 @@ the --do-not-scan will disable the search for new files in the current command.
 ### --checksum
 
 the --checksum argument is for specifing the actual ```checksum.txt``` file to be used. Its defaults to ```$PWD/checksum.txt```.
+
+### LOG_FILE
+
+if you set the env variable ```LOG_FILE``` a save log file will be used.
+
+```
+LOG_FILE=/tmp/checksum.txt.log checksum.txt validate
+```
