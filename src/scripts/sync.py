@@ -1,7 +1,7 @@
 from os.path import abspath, join, relpath, curdir, isdir, dirname
 
 from scripts.override import override
-from shared.log import log, quit, error, logProgress, debug
+from shared.log import log, quit, error, logProgress, debug, getPrintEvery, setPrintEvery
 from shared.checksum import readChecksumTXT, calculateChecksumTXTPathForKey, writeChecksumTXT
 from shared.args import parser
 from shared.fs import removePath, replacePath
@@ -22,6 +22,10 @@ def sync(args):
     sourceChecksumPath = join(f"{sourceChecksumDirPath}", "checksum.txt")
     targetChecksumPath = join(f"{targetChecksumDirPath}", "checksum.txt")
 
+    # disable print every setting
+    oldPrintEvery = getPrintEvery()
+    setPrintEvery(False)
+
     # regenerate checksum.txt on source and target
     if args.pre_sync == "all" or args.pre_sync == "source" or args.pre_sync == None:
         log(f"recalculating checkums for [{relpath(sourceChecksumPath, curdir)}]")
@@ -29,6 +33,9 @@ def sync(args):
     if args.pre_sync == "all" or args.pre_sync == "target" or args.pre_sync == None:
         log(f"recalculating checkums for [{relpath(targetChecksumPath, curdir)}]")
         override(parser.parse_args(["--checksum", targetChecksumPath, "--dry-run", str(args.dry_run) if args.dry_run != None else "1", "override"]), True)
+
+    # restore printevery setting
+    setPrintEvery(oldPrintEvery)
 
     # diff the 2 checksum.txt
     sourceChecksum = readChecksumTXT(sourceChecksumPath)

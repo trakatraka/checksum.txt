@@ -21,8 +21,17 @@ def setVerbose(value: bool=False):
 def initLogWithArgs(args):
     setVerbose(args.verbose != 0)
     if args.print_every != None:
+        setPrintEvery(args.print_every if args.print_every > 0 else False)
+
+def setPrintEvery(value):
+    if value != None:
         global PRINT_EVERY
-        PRINT_EVERY = args.print_every if args.print_every > 0 else False
+        PRINT_EVERY = value
+
+def getPrintEvery():
+    global PRINT_EVERY
+    return PRINT_EVERY
+
 
 def getVerbose():
     return verboseSetting
