@@ -30,9 +30,11 @@ def sync(args):
     if args.pre_sync == "all" or args.pre_sync == "source" or args.pre_sync == None:
         log(f"recalculating checkums for [{relpath(sourceChecksumPath, curdir)}]")
         override(parser.parse_args(["--checksum", sourceChecksumPath, "--dry-run", str(args.dry_run) if args.dry_run != None else "1", "override"]), True)
+        log(f"done recalculating checkums for [{relpath(sourceChecksumPath, curdir)}]")
     if args.pre_sync == "all" or args.pre_sync == "target" or args.pre_sync == None:
         log(f"recalculating checkums for [{relpath(targetChecksumPath, curdir)}]")
         override(parser.parse_args(["--checksum", targetChecksumPath, "--dry-run", str(args.dry_run) if args.dry_run != None else "1", "override"]), True)
+        log(f"done recalculating checkums for [{relpath(targetChecksumPath, curdir)}]")
 
     # restore printevery setting
     setPrintEvery(oldPrintEvery)
