@@ -54,7 +54,7 @@ def checkForMissingAndChangedFiles(checksumPath, checksum, paths=None):
                 try:
                     currentChecksum = calculateChecksumTXTValueForKey(key, checksumPath)
                     if currentChecksum != checksum[key]:
-                        verboseWarn(f'[{key}] checksum validation failed !')
+                        verboseWarn(f'[{key}] checksum changed !')
                         changedKeys.append((key, currentChecksum))
                 except Exception as e:
                     error(e)
