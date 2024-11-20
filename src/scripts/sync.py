@@ -68,7 +68,7 @@ def sync(args):
         sortedKeys = sorted(set(keysToDelete))
         sortedKeys.reverse()
         for key in sortedKeys:
-            debug(f"{dryRunStr}[{runnedChanges}/{totalChanges}] deleting [{key}] to target")
+            log(f"[{runnedChanges}/{totalChanges}] {dryRunStr} deleting [{key}] from target")
             targetFilePath = calculateChecksumTXTPathForKey(key, targetChecksumPath)
             if args.dry_run == 0:
                 del targetChecksum[key]
@@ -80,7 +80,7 @@ def sync(args):
     # second replace keys
     if replaceKeysMode:
         for key in sorted(set(keysToReplace)):
-            debug(f"{dryRunStr}[{runnedChanges}/{totalChanges}] replacing [{key}] to target")
+            log(f"[{runnedChanges}/{totalChanges}] {dryRunStr} replacing [{key}] in target")
             sourceFilePath = calculateChecksumTXTPathForKey(key, sourceChecksumPath)
             targetFilePath = calculateChecksumTXTPathForKey(key, targetChecksumPath)
             if args.dry_run == 0:
@@ -93,7 +93,7 @@ def sync(args):
     # third add keys
     if addKeysMode:
         for key in sorted(set(keysToAdd)):
-            debug(f"{dryRunStr}[{runnedChanges}/{totalChanges}] adding [{key}] to target")
+            log(f"[{runnedChanges}/{totalChanges}] {dryRunStr} adding [{key}] to target")
             sourceFilePath = calculateChecksumTXTPathForKey(key, sourceChecksumPath)
             targetFilePath = calculateChecksumTXTPathForKey(key, targetChecksumPath)
             if args.dry_run == 0:
