@@ -14,7 +14,7 @@ from scripts.sync import sync
 from shared.log import error, quit, log, initLogWithArgs
 
 args = parser.parse_args()
-log(args)
+#log(args)
 log(f"PWD={abspath(curdir)}")
 log(f"ARGS={argv[1:]}")
 initLogWithArgs(args)
