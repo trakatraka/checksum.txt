@@ -124,3 +124,7 @@ if you set the env variable ```LOG_FILE``` a save log file will be used.
 ```
 LOG_FILE=/tmp/checksum.txt.log checksum.txt validate
 ```
+
+### Ignored Files
+
+```.DS_Store``` and files that start with the ```._``` characters will be ignored.
