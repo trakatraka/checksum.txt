@@ -100,3 +100,26 @@ def checkForFilesNotInChecksum(checksumPath, checksum, paths=None):
     log(f"scanning for files not in checksum.txt took {took}ms")
 
     return ret
+
+def checkForMissingFilesInChecksum(checksumPath, checksum):
+    MS_FROM_START = int(round(time() * 1000))
+    ret = []
+
+    filesToCheck = sorted(checksum.keys())
+
+    log(f"scanning for missing files in checksum.txt")
+    
+    #runned = 0
+    #total = len(filesToCheck)
+    
+    for key in sorted(filesToCheck):
+        path = abspath(key)
+        if not exists(path) or shoudIgnore(path, checksumPath):
+            debug(f'[{key}] missing in checksum.txt !')
+            ret.append(key)
+
+    took = int(round(time() * 1000)) - MS_FROM_START
+    log(f"found [{len(ret)}] missing files in checksum.txt")
+    log(f"scanning for missing files in checksum.txt took {took}ms")
+
+    return ret

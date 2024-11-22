@@ -11,6 +11,7 @@ from scripts.changes import changes
 from scripts.override import override
 from scripts.append import append
 from scripts.sync import sync
+from scripts.prune import prune
 from shared.log import error, quit, log, initLogWithArgs
 
 args = parser.parse_args()
@@ -36,6 +37,8 @@ else:
     else:
         if args.CMD[0] == "validate":
             validate(args)
+        elif args.CMD[0] == "prune":
+            prune(args)
         elif args.CMD[0] == "changes":
             changes(args)
         elif args.CMD[0] == "append":
