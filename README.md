@@ -127,4 +127,4 @@ LOG_FILE=/tmp/checksum.txt.log checksum.txt validate
 
 ### Ignored Files
 
-```.DS_Store``` and files that start with the ```._``` characters will be ignored.
+```.DS_Store```, ```Icon\r``` and files that start with the ```._``` characters will be ignored by default.
