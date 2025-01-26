@@ -1,5 +1,5 @@
-from os import listdir, unlink, rmdir, remove, symlink, readlink, mkdir
-from os.path import join, isdir, basename, islink, exists
+from os import listdir, unlink, rmdir, remove, symlink, readlink, makedirs, mkdir
+from os.path import join, isdir, basename, islink, exists, dirname
 
 from shutil import copyfile, rmtree
 
@@ -36,6 +36,9 @@ def removePath(path):
 
 def replacePath(sourceFilePath, targetFilePath):
     removePath(targetFilePath)
+    targetDirname = dirname(targetFilePath)
+    if not exists(targetDirname):
+        makedirs(targetDirname, exist_ok=False)
     if islink(sourceFilePath):
         symlink(readlink(sourceFilePath), targetFilePath)
     elif isdir(sourceFilePath):
