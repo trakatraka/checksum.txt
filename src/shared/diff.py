@@ -38,7 +38,7 @@ def checkForMissingAndChangedFiles(checksumPath, checksum, paths=None):
 
     MS_FROM_START = int(round(time() * 1000))
 
-    log(f"calculating {total} checksums")
+    log(f"checking {total} checksums")
 
     for file in sorted(filesToCheck):
         filepath = abspath(file)
@@ -64,7 +64,7 @@ def checkForMissingAndChangedFiles(checksumPath, checksum, paths=None):
             logProgress(dirname(key), runned, total)
     
     took = int(round(time() * 1000)) - MS_FROM_START
-    log(f"calculating {total} checksums took {took}ms")
+    log(f"checking {total} checksums took {took}ms")
     
     return (keysToDelete, keysToAdd, changedKeys, errorKeys)
 
