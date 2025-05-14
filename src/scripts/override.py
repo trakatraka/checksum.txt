@@ -51,12 +51,14 @@ def override(args, noQuiting=False):
         debug(f'{key} updating from checksum.txt!')
         sourceChecksum[key] = checksum
 
+    total_changes = len(keysToDelete) + len(changedKeys) + len(keysToAdd)
     log(f"[{len(keysToDelete)}] files deleted")
     log(f"[{len(changedKeys)}] files changed")
     log(f"[{len(keysToAdd)}] files added")
     if len(errorKeys) > 0:
         error(f"[{len(errorKeys)}] files cannot be read!")
 
+    log(f"total [{total_changes}] changes")
     if args.dry_run == 0:
         log(f"writing changes to checksum.txt")
         writeChecksumTXT(sourceChecksumPath, sourceChecksum)

@@ -39,6 +39,12 @@ def validate(args):
         log(f"[{len(changedKeys)}] files changed")
     if len(errorKeys) > 0:
         error(f"[{len(errorKeys)}] files cannot be read!")
+    total_changes = len(keysToDelete) + len(changedKeys) + len(keysToAdd) + len(keysToDelete)
+    
+    if total_changes > 0:
+        error(f"total [{total_changes}] changes")
+    else:
+        log(f"total [{total_changes}] changes")
 
     if len(keysToDelete) + len(changedKeys) + len(keysToAdd) + len(keysToDelete) + len(errorKeys) > 0:
         error(f"validation NOT ok")

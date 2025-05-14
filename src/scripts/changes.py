@@ -31,6 +31,9 @@ def changes(args):
     if len(errorKeys) > 0:
         error(f"[{len(errorKeys)}] files cannot be read!")
 
+    total_changes = len(keysToDelete) + len(changedKeys) + len(keysToAdd)
+    log(f"total [{total_changes}] changes")
+    
     if len(keysToDelete) + len(changedKeys) + len(keysToAdd) + len(errorKeys) > 0:
         quit(1)
     else:
