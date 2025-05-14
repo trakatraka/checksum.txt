@@ -109,14 +109,16 @@ def checkForMissingFilesInChecksum(checksumPath, checksum):
 
     log(f"scanning for missing files in checksum.txt")
     
-    #runned = 0
-    #total = len(filesToCheck)
+    runned = 0
+    total = len(filesToCheck)
     
     for key in sorted(filesToCheck):
         path = abspath(key)
         if not exists(path) or shoudIgnore(path, checksumPath):
-            debug(f'[{key}] missing in checksum.txt !')
+            warn(f'[{key}] missing in checksum.txt !')
             ret.append(key)
+        runned+=1
+        logProgress(dirname(key), runned, total)
 
     took = int(round(time() * 1000)) - MS_FROM_START
     log(f"found [{len(ret)}] missing files in checksum.txt")
