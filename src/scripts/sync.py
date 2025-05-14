@@ -69,6 +69,12 @@ def sync(args):
     dryRunStr = f"" if args.dry_run == 0 else "NOT "
     totalChanges = (len(keysToDelete) if deleteKeysMode else 0) + (len(keysToReplace) if replaceKeysMode else 0) + (len(keysToAdd) if addKeysMode else 0)
     runnedChanges = 0
+    if deleteKeysMode:
+        log(f"[{len(keysToDelete)}] files deleted")
+    if replaceKeysMode:
+        log(f"[{len(keysToReplace)}] files changed")
+    if addKeysMode:
+        log(f"[{len(keysToAdd)}] files added")
     log(f"{dryRunStr}syncing [{totalChanges}] changes")
 
 
